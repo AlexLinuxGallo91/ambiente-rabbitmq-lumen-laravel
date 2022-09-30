@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+
+  lumen-ms-1:
+    build:
+      context: ./docker/lumen
+      dockerfile: Dockerfile
+    image: test-microservice-lumen
+    container_name: ${CONTAINER_NAME_LUMEN}
+    ports:
+      - ${PORT_LUMEN_1}:8080
+    volumes:
+      - ./hello-consumer:/src
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ${CONTAINER_NAME_RABBITMQ}
+    
+networks:
+  lumen-net:
+    driver: bridge
