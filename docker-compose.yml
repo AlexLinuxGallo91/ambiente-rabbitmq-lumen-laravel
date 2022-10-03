@@ -11,6 +11,20 @@ services:
       - ${PORT_LUMEN_1}:8080
     volumes:
       - ./hello-consumer:/src
+    networks:
+      - lumen-net
+
+  php-fpm:
+    image: php-fpm-vue
+    build: 
+      context: ./docker-config/docker-php-fpm
+      dockerfile: Dockerfile
+    container_name: php-fpm
+    restart: unless-stopped
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel-itoc-plus-development
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -18,6 +32,9 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+    restart: unless-stopped
+    networks:
+      - lumen-net
     
 networks:
   lumen-net:
