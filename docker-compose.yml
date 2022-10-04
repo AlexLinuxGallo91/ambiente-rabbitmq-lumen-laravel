@@ -10,7 +10,7 @@ services:
     ports:
       - ${PORT_LUMEN_1}:8080
     volumes:
-      - ./hello-consumer:/src
+      - ./lumen-consumer:/src
     depends_on:
       - db
     networks:
@@ -72,16 +72,16 @@ services:
     networks:
       - lumen-net
     
-  composer-laravel:
-    image: composer:latest
-    container_name: composer-laravel-rabbitmq
-    volumes:
-      - ./laravel-producers:/app
-    command: >
-      sh -c "composer update && composer install
-            "
-    networks:
-      - lumen-net
+  # composer-laravel:
+  #   image: composer:latest
+  #   container_name: composer-laravel-rabbitmq
+  #   volumes:
+  #     - ./laravel-producers:/app
+  #   command: >
+  #     sh -c "composer update && composer install
+  #           "
+  #   networks:
+  #     - lumen-net
     
 networks:
   lumen-net:

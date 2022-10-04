@@ -6,7 +6,6 @@ chmod -R 777 /var/www/storage/logs
 echo "Iniciando la descarga de las dependencias con artisan"
 
 cd /var/www
-composer install
 composer update
 
 cp -f .env.example .env
