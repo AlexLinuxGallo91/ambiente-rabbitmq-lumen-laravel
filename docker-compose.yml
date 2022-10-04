@@ -1,7 +1,7 @@
 version: "3.9"
-services:
 
-  lumen-ms-1:
+services:
+  lumen:
     build:
       context: ./docker/lumen
       dockerfile: Dockerfile
@@ -11,20 +11,56 @@ services:
       - ${PORT_LUMEN_1}:8080
     volumes:
       - ./hello-consumer:/src
+    depends_on:
+      - db
     networks:
       - lumen-net
 
   php-fpm:
     image: php-fpm-vue
     build: 
-      context: ./docker-config/docker-php-fpm
+      context: ./docker/php-fpm
       dockerfile: Dockerfile
     container_name: php-fpm
     restart: unless-stopped
     volumes:
-      - .:/var/www
+      - ./laravel-producers:/var/www
+    depends_on:
+      - db
     networks:
-      - laravel-itoc-plus-development
+      - lumen-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-laravel
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    volumes:
+      - ./laravel-producers:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d/
+    depends_on:
+      - db
+    networks:
+      - lumen-net
+
+  db:
+    image: mysql:8.0.30
+    container_name: db-mysql-laravel
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+    volumes:
+      - ${MYSQL_DATA_PATH}:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - lumen-net
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -33,6 +69,17 @@ services:
       - 5672:5672
       - 15672:15672
     restart: unless-stopped
+    networks:
+      - lumen-net
+    
+  composer-laravel:
+    image: composer:latest
+    container_name: composer-laravel-rabbitmq
+    volumes:
+      - ./laravel-producers:/app
+    command: >
+      sh -c "composer update && composer install
+            "
     networks:
       - lumen-net
     

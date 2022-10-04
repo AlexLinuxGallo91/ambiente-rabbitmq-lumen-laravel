@@ -20,5 +20,14 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 
-# Set working directory
+# instala composer
+RUN php -r "copy('http://getcomposer.org/installer', 'composer-setup.php');" && \
+php composer-setup.php --install-dir=/usr/bin --filename=composer && \
+php -r "unlink('composer-setup.php');"
+
+# Set working directory and permissions
 WORKDIR /var/www
+
+COPY ./entrypoint.sh /.
+RUN chmod 0755 /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]

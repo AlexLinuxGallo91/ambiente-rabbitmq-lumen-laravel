@@ -5,12 +5,13 @@ php composer-setup.php --install-dir=/usr/bin --filename=composer && \
 php -r "unlink('composer-setup.php');"
 
 RUN docker-php-ext-install sockets
+RUN apk add unzip
 
 # copy all of the file in folder to /src
 RUN mkdir /src
 WORKDIR /src
 COPY ./entrypoint.sh /.
 
-RUN chmod 755 /entrypoint.sh
+RUN chmod 0755 /entrypoint.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
