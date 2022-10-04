@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # estableciendo permisos a los logs
-chmod -R 755 /var/www/storage/logs
+chmod -R 777 /var/www/storage/logs
 
 echo "Iniciando la descarga de las dependencias con artisan"
 
