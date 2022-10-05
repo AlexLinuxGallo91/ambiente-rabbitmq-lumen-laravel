@@ -1,16 +1,46 @@
 version: "3.9"
 
 services:
-  lumen:
+  lumen-estore:
     build:
       context: ./docker/lumen
       dockerfile: Dockerfile
     image: test-microservice-lumen
-    container_name: ${CONTAINER_NAME_LUMEN}
+    container_name: ${CONTAINER_NAME_LUMEN_ESTORE}
     ports:
-      - ${PORT_LUMEN_1}:8080
+      - ${PORT_LUMEN_ESTORE}:8080
     volumes:
-      - ./lumen-consumer:/src
+      - ./lumen-e-store:/src
+    depends_on:
+      - db
+    networks:
+      - lumen-net
+  
+  lumen-sales:
+    build:
+      context: ./docker/lumen
+      dockerfile: Dockerfile
+    image: test-microservice-lumen
+    container_name: ${CONTAINER_NAME_LUMEN_SALES}
+    ports:
+      - ${PORT_LUMEN_SALES}:8080
+    volumes:
+      - ./lumen-sales:/src
+    depends_on:
+      - db
+    networks:
+      - lumen-net
+
+  lumen-warehouse:
+    build:
+      context: ./docker/lumen
+      dockerfile: Dockerfile
+    image: test-microservice-lumen
+    container_name: ${CONTAINER_NAME_LUMEN_WAREHOUSE}
+    ports:
+      - ${PORT_LUMEN_WAREHOUSE}:8080
+    volumes:
+      - ./lumen-warehouse:/src
     depends_on:
       - db
     networks:
@@ -35,7 +65,7 @@ services:
     container_name: nginx-laravel
     restart: unless-stopped
     ports:
-      - 8080:80
+      - 80:80
     volumes:
       - ./laravel-producers:/var/www
       - ./docker/nginx:/etc/nginx/conf.d/
