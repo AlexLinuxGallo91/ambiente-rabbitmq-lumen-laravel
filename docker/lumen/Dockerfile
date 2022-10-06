@@ -7,7 +7,7 @@ php -r "unlink('composer-setup.php');"
 RUN docker-php-ext-install sockets
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 RUN docker-php-ext-enable pdo_mysql
-RUN apk add unzip
+RUN apk add unzip curl
 
 # copy all of the file in folder to /src
 RUN mkdir /src

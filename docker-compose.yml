@@ -13,6 +13,9 @@ services:
       - ./lumen-e-store:/src
     depends_on:
       - db
+      - php-fpm
+    dns:
+      - 8.8.8.8
     networks:
       - lumen-net
   
@@ -28,6 +31,9 @@ services:
       - ./lumen-sales:/src
     depends_on:
       - db
+      - lumen-estore
+    dns:
+      - 8.8.8.8
     networks:
       - lumen-net
 
@@ -43,6 +49,9 @@ services:
       - ./lumen-warehouse:/src
     depends_on:
       - db
+      - lumen-sales
+    dns:
+      - 8.8.8.8
     networks:
       - lumen-net
 
@@ -57,6 +66,9 @@ services:
       - ./laravel-producers:/var/www
     depends_on:
       - db
+      - rabbitmq
+    dns:
+      - 8.8.8.8
     networks:
       - lumen-net
 
@@ -71,6 +83,8 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d/
     depends_on:
       - db
+      - rabbitmq
+      - php-fpm
     networks:
       - lumen-net
 
@@ -85,8 +99,8 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_USER: ${MYSQL_USER}
-    volumes:
-      - ${MYSQL_DATA_PATH}:/var/lib/mysql
+    # volumes:
+    #   - ${MYSQL_DATA_PATH}:/var/lib/mysql
     ports:
       - 3306:3306
     networks:
@@ -99,6 +113,9 @@ services:
       - 5672:5672
       - 15672:15672
     restart: unless-stopped
+    volumes:
+      - ./docker/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./docker/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     networks:
       - lumen-net
     

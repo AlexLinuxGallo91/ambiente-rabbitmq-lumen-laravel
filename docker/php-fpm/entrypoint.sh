@@ -10,6 +10,5 @@ composer update
 
 cp -f .env.example .env
 php artisan key:generate
-php artisan migrate:fresh
-php artisan db:seed
+php artisan migrate:fresh --seed
 php-fpm

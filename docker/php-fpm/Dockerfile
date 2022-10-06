@@ -15,6 +15,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install sockets
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-enable pdo_mysql
 
 # install node js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
